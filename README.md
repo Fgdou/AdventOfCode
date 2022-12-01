@@ -1,5 +1,7 @@
 # Advent Of Code 2022
 
+![AOC](aoc.jpg)
+
 ## Description
 AOC is a game challenge through december, with a different problem each day increasing in difficulty
 
