@@ -3,13 +3,12 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include "1.h"
+#include "Day1.h"
 
 using namespace std;
-vector<vector<int>> input;
-
 
 void Day1::parse(std::istream &in) {
+    input.clear();
     vector<int> actual;
     while(!in.eof()){
         string line;

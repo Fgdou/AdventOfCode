@@ -6,11 +6,13 @@
 #include <filesystem>
 #include <vector>
 #include <fstream>
-#include "1.h"
+#include "Day1.h"
+#include "Day2.h"
 
 int main(int argc, char** argv){
     std::vector<std::unique_ptr<Abstract>> classes;
     classes.emplace_back(std::make_unique<Day1>());
+    classes.emplace_back(std::make_unique<Day2>());
 
     if(argc > 2){
         throw std::runtime_error("Usage : ./progam <#day>");
