@@ -9,12 +9,14 @@
 #include "Day1.h"
 #include "Day2.h"
 #include "Day3.h"
+#include "Day4.h"
 
 int main(int argc, char** argv){
     std::vector<std::unique_ptr<Abstract>> classes;
     classes.emplace_back(std::make_unique<Day1>());
     classes.emplace_back(std::make_unique<Day2>());
     classes.emplace_back(std::make_unique<Day3>());
+    classes.emplace_back(std::make_unique<Day4>());
 
     if(argc > 2){
         throw std::runtime_error("Usage : ./progam <#day>");
