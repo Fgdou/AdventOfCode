@@ -12,6 +12,9 @@
 #include "Day4.h"
 #include "Day5.h"
 #include "Day6.h"
+#include "Day7.h"
+
+// start 7h30
 
 int main(int argc, char** argv){
     std::vector<std::unique_ptr<Abstract>> classes;
@@ -21,6 +24,7 @@ int main(int argc, char** argv){
     classes.emplace_back(std::make_unique<Day4>());
     classes.emplace_back(std::make_unique<Day5>());
     classes.emplace_back(std::make_unique<Day6>());
+    classes.emplace_back(std::make_unique<Day7>());
 
     if(argc > 2){
         throw std::runtime_error("Usage : ./progam <#day>");
