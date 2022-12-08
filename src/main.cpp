@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 #include "Day1.h"
 #include "Day2.h"
 #include "Day3.h"
@@ -13,6 +14,7 @@
 #include "Day5.h"
 #include "Day6.h"
 #include "Day7.h"
+#include "Day8.h"
 
 // start 7h30
 
@@ -25,6 +27,7 @@ int main(int argc, char** argv){
     classes.emplace_back(std::make_unique<Day5>());
     classes.emplace_back(std::make_unique<Day6>());
     classes.emplace_back(std::make_unique<Day7>());
+    classes.emplace_back(std::make_unique<Day8>());
 
     if(argc > 2){
         throw std::runtime_error("Usage : ./progam <#day>");
@@ -46,6 +49,10 @@ int main(int argc, char** argv){
     for(const auto& entry : std::filesystem::directory_iterator(pathInput)){
         pathInputs.emplace_back(entry.path());
     }
+
+    std::sort(pathInputs.begin(), pathInputs.end(), [](auto& a, auto& b){
+        return a.size() < b.size();
+    });
 
     if(pathInputs.empty())
         throw std::runtime_error("Input day " + std::to_string(nday) + " not found");
