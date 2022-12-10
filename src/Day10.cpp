@@ -30,8 +30,16 @@ void Day10::solve() {
 
     int result = 0;
 
+    vector<char> CRT;
+
     for(auto& c : input){
         while(!c->done()){
+            int pos = registers['x'];
+            if(ncycles%40 >= (pos%40-1) && ncycles%40 <= (pos%40+1))
+                CRT.emplace_back('#');
+            else
+                CRT.emplace_back('.');
+
             ncycles++;
             if(std::find(cycles.begin(), cycles.end(),ncycles) != cycles.end()){
                 result += ncycles*registers['x'];
@@ -41,6 +49,17 @@ void Day10::solve() {
     }
 
     cout << "Part 1 : " << result << endl;
+    cout << "Part 2 : " << endl;
+    printCRT(CRT);
+}
+
+void Day10::printCRT(const vector<char> &crt) {
+    for(int i=0; i<crt.size(); i++){
+        cout << crt[i];
+        if(i%40 == 39)
+            cout << '\n';
+    }
+    cout << '\n' << endl;
 }
 
 void Day10::Noop::execute(map<char, int> &registers) {

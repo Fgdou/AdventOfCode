@@ -1,4 +1,4 @@
-# Advent Of Code 2022
+# [Advent Of Code 2022](https://adventofcode.com/2022)
 
 ![AOC](aoc.jpg)
 
@@ -29,3 +29,4 @@ make
 | 7   | 02:39:23   | 1:10     |
 | 8   | 02:43:46   | 0:36     |
 | 9   | 08:29:54   | 1:30     |
+| 10  | 08:15:41   | 0:45     |

@@ -4,6 +4,8 @@
 
 // 7:30
 // 8:00
+// 14:00
+// 14:16
 
 #ifndef ADVENTOFCODE2022_DAY10_H
 #define ADVENTOFCODE2022_DAY10_H
@@ -56,6 +58,8 @@ public:
     void solve() override;
 
 private:
+
+    void printCRT(const vector<char> &crt);
 
 };
 
