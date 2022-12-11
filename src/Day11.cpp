@@ -66,7 +66,7 @@ void Day11::solve() {
 
     auto count = countItems(input);
 
-    int part1 = count[0]*count[1];
+    long part1 = ((long)count[0])*count[1];
     cout << "Part 1 : " << part1 << endl;
 }
 
@@ -98,29 +98,30 @@ void Day11::printAll(const vector<Monkey> &monkeys, int round) {
 
 void Day11::Monkey::moveItems(vector<Monkey> &monkeys) {
     for(auto& item : items){
-        long newItem = calcOperation(item)/3;
-        int pos = check(newItem);
-        monkeys[pos].items.emplace_back(newItem);
+        calcOperation(item);
+        item.div(3);
+        int pos = check(item);
+        monkeys[pos].items.emplace_back(item);
         countItems++;
     }
     items.clear();
 }
 
-int Day11::Monkey::check(long item) const {
-    if(item % condition == 0)
+int Day11::Monkey::check(const Item &item) const {
+    if(item.modulus(condition))
         return monkeyTrue;
     return monkeyFalse;
 }
 
-long Day11::Monkey::calcOperation(int item) const {
-    long n = operationNumber;
+void Day11::Monkey::calcOperation(Item &item) const {
+    auto n = Item(operationNumber);
 
-    if(n == -1)
+    if(operationNumber == -1)
         n = item;
 
     if(operation == '*')
-        return item * n;
-    return item + n;
+        return item.mul(n);
+    return item.add(n);
 }
 
 int Day11::Monkey::getCountItems() const {
@@ -130,6 +131,28 @@ int Day11::Monkey::getCountItems() const {
 void Day11::Monkey::print(int n) const {
     cout << n << ": ";
     for(auto& i : items)
-        cout << i << ", ";
+        cout << i.getValue() << ", ";
     cout << endl;
+}
+
+Day11::Item::Item(long n): value(n){}
+
+void Day11::Item::add(const Item &n) {
+    value += n.getValue();
+}
+
+void Day11::Item::mul(const Item &n) {
+    value *= n.getValue();
+}
+
+long Day11::Item::getValue() const {
+    return value;
+}
+
+bool Day11::Item::modulus(int n) const {
+    return value % n == 0;
+}
+
+void Day11::Item::div(int n) {
+    value /= n;
 }

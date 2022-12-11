@@ -13,8 +13,21 @@
 using namespace std;
 class Day11 : public Abstract {
 private:
+    struct Item{
+    private:
+        long value;
+    public:
+        explicit Item(long n);
+        void add(const Item &n);
+        void mul(const Item &n);
+        void div(int n);
+
+        long getValue() const;
+
+        bool modulus(int n) const;
+    };
     struct Monkey{
-        vector<int> items;
+        vector<Item> items;
         char operation;
         long operationNumber;
         int condition;
@@ -29,8 +42,8 @@ private:
 
     private:
         int countItems = 0;
-        int check(long item) const;
-        long calcOperation(int item) const;
+        int check(const Item &item) const;
+        void calcOperation(Item &item) const;
     };
 
     vector<Monkey> input;
