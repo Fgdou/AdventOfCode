@@ -58,10 +58,12 @@ void Day11::parse(istream &in) {
 }
 
 void Day11::solve() {
-    printAll(input, 0);
-    for (int i = 0; i < 20; ++i){
-        round(input);
-        printAll(input, i+1);
+    long modulus = bigModulus(input);
+
+//    printAll(input, 0);
+    for (int i = 0; i < 10000; ++i){
+        round(input, modulus);
+//        printAll(input, i+1);
     }
 
     auto count = countItems(input);
@@ -70,9 +72,9 @@ void Day11::solve() {
     cout << "Part 1 : " << part1 << endl;
 }
 
-void Day11::round(vector<Monkey> &monkeys) {
+void Day11::round(vector<Monkey> &monkeys, long modulus) {
     for(auto& m : monkeys){
-        m.moveItems(monkeys);
+        m.moveItems(monkeys, modulus);
     }
 }
 
@@ -96,10 +98,20 @@ void Day11::printAll(const vector<Monkey> &monkeys, int round) {
     cout << endl;
 }
 
-void Day11::Monkey::moveItems(vector<Monkey> &monkeys) {
+long Day11::bigModulus(const vector<Monkey> & monkeys) {
+    long n = 1;
+
+    for(auto& m : monkeys){
+        n *= m.condition;
+    }
+
+    return n;
+}
+
+void Day11::Monkey::moveItems(vector<Monkey> &monkeys, long modulus) {
     for(auto& item : items){
         calcOperation(item);
-        item.div(3);
+        item.doModulus(modulus);
         int pos = check(item);
         monkeys[pos].items.emplace_back(item);
         countItems++;
@@ -155,4 +167,8 @@ bool Day11::Item::modulus(int n) const {
 
 void Day11::Item::div(int n) {
     value /= n;
+}
+
+void Day11::Item::doModulus(long i) {
+    value %= i;
 }

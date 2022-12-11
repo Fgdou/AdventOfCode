@@ -3,6 +3,10 @@
 //
 
 // 10:27
+// 11:42
+// 16:45
+// 17:00
+//
 
 #ifndef ADVENTOFCODE2022_DAY11_H
 #define ADVENTOFCODE2022_DAY11_H
@@ -25,6 +29,8 @@ private:
         long getValue() const;
 
         bool modulus(int n) const;
+
+        void doModulus(long i);
     };
     struct Monkey{
         vector<Item> items;
@@ -34,7 +40,7 @@ private:
         int monkeyTrue;
         int monkeyFalse;
 
-        void moveItems(vector<Monkey> &monkeys);
+        void moveItems(vector<Monkey> &monkeys, long modulus);
 
         int getCountItems() const;
 
@@ -54,11 +60,13 @@ public:
     void solve() override;
 
 private:
-    void round(vector<Monkey> &monkeys);
+    void round(vector<Monkey> &monkeys, long modulus);
 
     int checkItem(int item, Monkey &monkey);
     vector<int> countItems(const vector<Monkey>& monkeys);
     void printAll(const vector<Monkey> &monkeys, int round);
+
+    long bigModulus(const vector<Monkey>& Monkey);
 };
 
 
