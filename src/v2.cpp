@@ -91,6 +91,10 @@ double v2::distance(const v2 &other) const {
     return sqrt(delta.x*delta.x + delta.y*delta.y);
 }
 
+bool v2::operator!=(const v2 &other) const {
+    return !(*this == other);
+}
+
 
 std::ostream &operator<<(std::ostream &os, const v2 &v) {
     os << '{' << v.x << ", " << v.y << '}';

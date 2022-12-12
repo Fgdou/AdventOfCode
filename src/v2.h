@@ -18,6 +18,7 @@ public:
     v2(int n);
 
     bool operator==(const v2& other) const;
+    bool operator!=(const v2& other) const;
     v2& operator=(const v2& other);
     v2& operator+=(const v2& other);
     v2& operator-=(const v2& other);

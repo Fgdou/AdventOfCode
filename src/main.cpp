@@ -18,6 +18,7 @@
 #include "Day9.h"
 #include "Day10.h"
 #include "Day11.h"
+#include "Day12.h"
 
 // start 7h30
 
@@ -34,6 +35,7 @@ int main(int argc, char** argv){
     classes.emplace_back(std::make_unique<Day9>());
     classes.emplace_back(std::make_unique<Day10>());
     classes.emplace_back(std::make_unique<Day11>());
+    classes.emplace_back(std::make_unique<Day12>());
 
     if(argc > 2){
         throw std::runtime_error("Usage : ./progam <#day>");
