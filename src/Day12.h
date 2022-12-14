@@ -26,8 +26,10 @@ public:
     void solve() override;
 
     bool check(v2 pos, v2 last, const vector<vector<int>>& counts);
+    bool check2(v2 pos, v2 last, const vector<vector<int>>& counts);
 
     vector<v2> aStar();
+    vector<v2> aStar2();
 };
 
 
