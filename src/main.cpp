@@ -21,8 +21,11 @@
 #include "Day12.h"
 #include "Day13.h"
 #include "Day14.h"
+#include "Day15.h"
 
 // start 7h30
+
+std::string inputname;
 
 int main(int argc, char** argv){
     std::vector<std::unique_ptr<Abstract>> classes;
@@ -40,6 +43,7 @@ int main(int argc, char** argv){
     classes.emplace_back(std::make_unique<Day12>());
     classes.emplace_back(std::make_unique<Day13>());
     classes.emplace_back(std::make_unique<Day14>());
+    classes.emplace_back(std::make_unique<Day15>());
 
     if(argc > 2){
         throw std::runtime_error("Usage : ./progam <#day>");
@@ -74,6 +78,7 @@ int main(int argc, char** argv){
     auto& c = *classes[nday-1];
 
     for(const auto& path : pathInputs){
+
         std::cout << "\n---------------------- " + path + " ----------------------------------\n";
 
         std::ifstream file;

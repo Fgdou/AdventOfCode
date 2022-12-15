@@ -95,6 +95,13 @@ bool v2::operator!=(const v2 &other) const {
     return !(*this == other);
 }
 
+v2 v2::rotate(double r) const {
+    int xx = cos(r)*x - sin(r)*y;
+    int yy = sin(r)*x + sin(r)*y;
+
+    return {xx, yy};
+}
+
 
 std::ostream &operator<<(std::ostream &os, const v2 &v) {
     os << '{' << v.x << ", " << v.y << '}';

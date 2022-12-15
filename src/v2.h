@@ -33,6 +33,8 @@ public:
 
     int manhattanDistance(const v2& other) const;
     double distance(const v2& other) const;
+
+    v2 rotate(double r) const;
 };
 
 std::ostream& operator<<(std::ostream& os, const v2& v);
