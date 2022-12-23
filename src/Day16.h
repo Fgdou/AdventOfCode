@@ -12,7 +12,7 @@
 #include <vector>
 
 #define START_POS "AA"
-#define MAX 30
+#define MAX 26
 
 using namespace std;
 
@@ -39,7 +39,9 @@ private:
         int count = -1;
     public:
         vector<Element> actions;
-        int evaluate(const Input &input);
+//        int evaluate(const Input &input);
+
+        int evaluate(Actions& other, const Input &input);
 
         Actions randomize(double p, const Input& input) const;
 
@@ -53,7 +55,8 @@ private:
         static void fill(const Input &input, Actions &res, string &pos) ;
     };
     class Model {
-        vector<Actions> population;
+        vector<Actions> population1;
+        vector<Actions> population2;
         double prob;
         double mutation;
         const Input& input;
@@ -62,7 +65,7 @@ private:
         void execute();
         int getMax();
 
-        const Actions &getProb(int total);
+        pair<Day16::Actions&, Day16::Actions&> getProb(int total);
     };
 
     Input input;

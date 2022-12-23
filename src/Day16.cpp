@@ -6,6 +6,11 @@
 // 2211
 // 2320
 
+// 2571
+// 2879
+// 2913
+// 2967 ?
+
 #include <iostream>
 #include "Day16.h"
 #include <algorithm>
@@ -35,16 +40,19 @@ void Day16::parse(std::istream &in) {
 }
 
 void Day16::solve() {
-    Model m(1000, .05, .05, input);
+    Model m(1000, .05, .1, input);
 
     int last = 0;
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 1000; ++i) {
         m.execute();
         int n = m.getMax();
-        if(n != last){
+        if(n != last || i%100 == 0){
             cout << i << ' ' << n << endl;
         }
         last = n;
+
+        if(n == 1707)
+            return;
     }
 }
 
@@ -55,38 +63,38 @@ int Day16::countEdges(const map<string, set<string>> &tunnels) {
     }
     return cnt/2;
 }
-
-int Day16::Actions::evaluate(const Input &input) {
-    if(count != -1)
-        return count;
-
-
-    if(actions.size() > MAX)
-        return 0;
-
-    int cnt = 0;
-    int minutes = 30;
-    string pos = START_POS;
-    set<string> opened;
-
-    for(auto& a : actions){
-        minutes--;
-        if(a.action == Element::MOVE){
-            if(input.tunnels.at(pos).find(a.pos) == input.tunnels.at(pos).end())
-                throw runtime_error("Error, path not available from " + pos + " to " + a.pos);
-            pos = a.pos;
-        }else{
-            if(opened.find(pos) == opened.end()){
-                cnt += minutes * input.flowrate.at(pos);
-                opened.insert(pos);
-            }
-        }
-    }
-
-    count = cnt;
-
-    return cnt;
-}
+//
+//int Day16::Actions::evaluate(const Input &input) {
+//    if(count != -1)
+//        return count;
+//
+//
+//    if(actions.size() > MAX)
+//        return 0;
+//
+//    int cnt = 0;
+//    int minutes = MAX;
+//    string pos = START_POS;
+//    set<string> opened;
+//
+//    for(auto& a : actions){
+//        minutes--;
+//        if(a.action == Element::MOVE){
+//            if(input.tunnels.at(pos).find(a.pos) == input.tunnels.at(pos).end())
+//                throw runtime_error("Error, path not available from " + pos + " to " + a.pos);
+//            pos = a.pos;
+//        }else{
+//            if(opened.find(pos) == opened.end()){
+//                cnt += minutes * input.flowrate.at(pos);
+//                opened.insert(pos);
+//            }
+//        }
+//    }
+//
+//    count = cnt;
+//
+//    return cnt;
+//}
 
 Day16::Actions Day16::Actions::random(const Day16::Input &input, int minutes) {
     Actions a{};
@@ -181,6 +189,52 @@ vector<Day16::Element> Day16::Actions::find(const string &pos) const {
     return {};
 }
 
+int Day16::Actions::evaluate(Day16::Actions &other, const Input &input) {
+    if(count != -1)
+        return count;
+
+
+    if(actions.size() > MAX)
+        return 0;
+
+    int cnt = 0;
+    int minutes = MAX;
+    string pos1 = START_POS;
+    string pos2 = START_POS;
+    set<string> opened;
+
+    for(int i=0; i<MAX; i++){
+        auto& a1 = actions[i];
+        auto& a2 = other.actions[i];
+
+        minutes--;
+        if(a1.action == Element::MOVE){
+            if(input.tunnels.at(pos1).find(a1.pos) == input.tunnels.at(pos1).end())
+                throw runtime_error("Error, path not available from " + pos1 + " to " + a1.pos);
+            pos1 = a1.pos;
+        }else{
+            if(opened.find(pos1) == opened.end()){
+                cnt += minutes * input.flowrate.at(pos1);
+                opened.insert(pos1);
+            }
+        }
+        if(a2.action == Element::MOVE){
+            if(input.tunnels.at(pos2).find(a2.pos) == input.tunnels.at(pos2).end())
+                throw runtime_error("Error, path not available from " + pos2 + " to " + a2.pos);
+            pos2 = a2.pos;
+        }else{
+            if(opened.find(pos2) == opened.end()){
+                cnt += minutes * input.flowrate.at(pos2);
+                opened.insert(pos2);
+            }
+        }
+    }
+
+    count = cnt;
+
+    return cnt;
+}
+
 
 Day16::Element Day16::Element::random(const vector<string>& possibilities) {
     Element e {
@@ -193,58 +247,78 @@ Day16::Element Day16::Element::random(const vector<string>& possibilities) {
 Day16::Model::Model(int population, double prob, double mutation, const Input& input)
     : mutation(mutation), prob(prob), input(input)
 {
-    for(int i=0; i<population; i++)
-        this->population.push_back(Actions::random(input, MAX));
+    for(int i=0; i<population; i++) {
+        this->population1.push_back(Actions::random(input, MAX));
+        this->population2.push_back(Actions::random(input, MAX));
+    }
 }
 
 int Day16::Model::getMax() {
     int m = 0;
-    for(auto& p : population){
-        m = max(m, p.evaluate(input));
+    for(int i=0; i<population1.size(); i++){
+        m = max(m, population1[i].evaluate(population2[i], input));
     }
     return m;
 }
 
 void Day16::Model::execute() {
-    vector<Actions> newVec{};
+    vector<Actions> newVec1{};
+    vector<Actions> newVec2{};
 
     // add children
     int total = 0;
-    for(auto& a : population)
-        total += a.evaluate(input);
+    for(int i=0; i<population1.size(); i++){
+        total += population1[i].evaluate(population2[i], input);
+    }
 
-    for(int i=1; i<MAX; i++) {
-        auto& e1 = getProb(total);
-        auto& e2 = getProb(total);
-        auto child = e1.generateChild(mutation, input, e2);
-        child.evaluate(input);
-        newVec.push_back(child);
+    for(int i=1; i<population1.size(); i++) {
+        auto e1 = getProb(total);
+        auto e2 = getProb(total);
+
+        {
+            auto child = e1.first.generateChild(mutation, input, e2.first);
+            newVec1.push_back(child);
+        }
+        {
+            auto child = e1.second.generateChild(mutation, input, e2.second);
+            newVec2.push_back(child);
+        }
     }
 
     // mutation
-    for(auto& a : newVec) {
+    for(auto& a : newVec1) {
         a = a.randomize(prob, input);
-        a.evaluate(input);
+    }
+    for(auto& a : newVec2) {
+        a = a.randomize(prob, input);
     }
 
     // select the first
-    sort(population.begin(), population.end(), [&](Actions& a1, Actions& a2){
-        return a1.evaluate(input) > a2.evaluate(input);
-    });
-    newVec.push_back(population[0]);
+    int imax = 0;
+    int max = 0;
+    for(int i=1; i<population1.size(); i++){
+        int v = population1[i].evaluate(population2[i], input);
+        if(v > max){
+            imax = i;
+            max = v;
+        }
+    }
+    newVec1.push_back(population1[imax]);
+    newVec2.push_back(population2[imax]);
 
-    population = newVec;
+    population1 = newVec1;
+    population2 = newVec2;
 }
 
-const Day16::Actions &Day16::Model::getProb(int total) {
+pair<Day16::Actions&, Day16::Actions&> Day16::Model::getProb(int total) {
     double v = (double) rand() / RAND_MAX;
     int n = v*total;
 
     int cnt = 0;
-    for(auto& a : population){
+    for(int i=0; i<MAX; i++){
         if(cnt >= n)
-            return a;
-        cnt += a.evaluate(input);
+            return {population1[i], population2[i]};
+        cnt += population1[i].evaluate(population2[i], input);
     }
-    return population[population.size()-1];
+    return {population1[population1.size()-1], population2[population2.size()-1]};
 }
